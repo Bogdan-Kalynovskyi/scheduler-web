@@ -1,0 +1,37 @@
+<table>
+    <caption>
+        <button mat-icon-button (click)="prevMonth()" [disabled]="isFirstMonth()">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        {{this.monthName+ ' ' + this.year}}
+        <button mat-icon-button (click)="nextMonth()" [disabled]="isLastMonth()">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </caption>
+    <colgroup>
+        <col class="weekend" />
+        <col class="working" />
+        <col class="working" />
+        <col class="working" />
+        <col class="working" />
+        <col class="working" />
+        <col class="weekend" />
+    </colgroup>
+    <tr>
+        <th>Su</th>
+        <th>Mo</th>
+        <th>Tu</th>
+        <th>We</th>
+        <th>Th</th>
+        <th>Fr</th>
+        <th>Sa</th>
+    </tr>
+    <tr *ngFor="let i of this.weeks; let week = index">
+        <td *ngFor="let j of this.weekDays; let day = index">
+            <span *ngIf="(week * 7 + day - this.firstWeekOffset >= 0) && (week * 7 + day - this.firstWeekOffset < this.daysCount)">
+                {{ week * 7 + day - this.firstWeekOffset + 1 }}
+                <mat-checkbox *ngIf="day > 0 && day < 6"></mat-checkbox>
+            </span>
+        </td>
+    </tr>
+</table>
