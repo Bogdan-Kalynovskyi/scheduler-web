@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import {  AuthService, GoogleLoginProvider,SocialUser } from "angular4-social-login";
+import {  AuthService, GoogleLoginProvider, SocialUser } from "angular4-social-login";
 
 import { UserService } from '../services/user.service';
 
@@ -14,26 +14,29 @@ export class AuthComponent implements OnInit{
 	loggedIn:boolean
 
 	constructor(
-		private userService:UserService,
+		private userService: UserService,
 		private authService: AuthService
 	) { }
  
 	ngOnInit() {
-  	this.authService.authState.subscribe(user => this.loggedIn = (user != null));
+  	this.loggedIn = this.userService.isAuthenticated()
   }
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID)
-    	.then(user => this.userService.authenticate(user)
-    		.subscribe(user => this.userService.saveUser(user)))
-  }
-  testToken(){
-  	this.userService.testToken().subscribe(res => console.log(res)) 
+    	.then((user:SocialUser) => this.userService.authenticate(user)
+    		.subscribe((user:User) => {
+    			this.userService.saveUser(user)
+    			this.loggedIn = true;
+    		}))
   }
  
   signOut(): void {
     this.authService.signOut()
-    	.then(() => this.userService.logout());
+    	.then(() => {
+    		this.userService.logout()
+    		this.loggedIn = false
+    	});
   }
 }
 

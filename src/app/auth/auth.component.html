@@ -1,2 +1,2 @@
-<button class="btn" (click)="signInWithGoogle()">Sign in with Google</button>
-<button class="btn" (click)="testToken()">test</button>
+<button mat-button *ngIf="!loggedIn" class="btn" (click)="signInWithGoogle()">Sign in with Google</button>
+<button mat-raised-button *ngIf="loggedIn" class="btn btn-primary" (click)="signOut()">Sign Out</button>

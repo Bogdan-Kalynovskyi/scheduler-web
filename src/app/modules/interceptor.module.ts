@@ -13,9 +13,10 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
   constructor(){}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = JSON.parse(localStorage.getItem('user')).token
-    if(req.url != ( environment.url + '/authenticate' ))
+    
+    if(req.url != ( environment.url + '/authenticate' )){
+    	let token = JSON.parse(localStorage.getItem('user')).token
       return next.handle(req.clone({ headers: req.headers.set('x-access-token', token) }))
-    else return next.handle(req)
+    }else return next.handle(req)
   }
 }
