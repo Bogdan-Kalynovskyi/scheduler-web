@@ -14,7 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { MonthComponent } from './month/month.component';
 import { AuthComponent } from './auth/auth.component';
 
-import { UserService } from './services/user.service'
+import { AuthService } from './services/auth.service';
 
 let config = new AuthServiceConfig([
   {
@@ -54,7 +54,7 @@ export function provideConfig() {
         useClass: HttpsRequestInterceptor, 
         multi: true 
       },
-      UserService
+      AuthService
     ]
 })
 export class AppModule { }

@@ -9,7 +9,7 @@ import {environment} from '../../environments/environment';
 export class HttpsRequestInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.url !== (environment.authUrl + '/authenticate')) {
+    if (req.url !== (environment.apiUrl + '/authenticate')) {
       const token = JSON.parse(localStorage.getItem('user')).token;
 
       return next.handle(req.clone({headers: req.headers.set('x-access-token', token)}));
