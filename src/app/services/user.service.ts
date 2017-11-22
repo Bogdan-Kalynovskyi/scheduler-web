@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import * as moment from 'moment';
 
 import {environment} from '../../environments/environment';
 
@@ -11,21 +10,18 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   authenticate(user) {
-    return this.http.post(environment.url + '/authenticate', user);
+    return this.http.post(environment.authUrl + '/authenticate', user);
   }
 
   isAuthenticated() {
     const user = this.getUser();
-    if (!user) {
-      return;
-    }
-    const tokenExp = user.expires;
-    if (tokenExp > moment().valueOf) {
-      console.log('expired');
-      this.logout();
-      return false;
-    } else {
-      console.log('token valid');
+    if (user) {
+      const tokenExp = user.expires;
+      if (tokenExp > Date.now()) {
+        this.logout();
+        return false;
+      }
+
       return true;
     }
   }
