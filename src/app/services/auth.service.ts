@@ -22,7 +22,7 @@ export class AuthService {
 
   isAuthenticated(): User | null {
     const user = this.getLocallySavedUser();
-    if (user && user.expires < Date.now()) {
+    if (user && user.expires > Date.now()) {
       return user;
     }
     return null;
