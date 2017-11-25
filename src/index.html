@@ -4,13 +4,21 @@
   <meta charset="utf-8">
   <title>Scheduler</title>
   <base href="/">
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 </head>
+
 <body>
   <app-root></app-root>
+
+  <script>
+    var googleApiLoadedPromise = new Promise(function(resolve, reject) {
+        window.onGoogleAuthLoaded = resolve;
+        window.onGoogleAuthFailed = reject;
+    });
+  </script>
+  <script src="https://apis.google.com/js/platform.js?onload=onGoogleAuthLoaded" async defer
+  onerror="onGoogleAuthFailed()"></script>
 </body>
 </html>
