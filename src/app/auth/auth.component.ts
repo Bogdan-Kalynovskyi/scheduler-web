@@ -24,7 +24,7 @@ export class AuthComponent implements OnInit {
   signInWithGoogle() {
     this.googleAuthService.signIn(GoogleLoginProvider.PROVIDER_ID)
     .then((user: SocialUser) => {
-      this.authService.authenticate(user)
+      this.authService.saveTokenToDb(user)
       .then((_user) => this.user = _user);
     });
   }

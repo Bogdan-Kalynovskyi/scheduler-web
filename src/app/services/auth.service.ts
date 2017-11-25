@@ -10,33 +10,33 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  authenticate(user: SocialUser): Promise<User | null> {
-    return this.http.post(environment.apiUrl + '/authenticate', user)
+  saveTokenToDb(socialUser: SocialUser): Promise<any> {
+    return this.http.post(environment.apiUrl + '/authenticate', socialUser)
       .toPromise()
-      .then((response: HttpResponse<any>) => this.saveUserLocally(response.body));
-      // .catch(() => alert('401')); // todo
+      .then((user: User) => {
+        this.saveUserLocally(user);
+        return user;
+      })
+      .catch(() => alert('Couldn\'t reach the project\'s server'));
   }
 
   isAuthenticated(): User | null {
     const user = this.getLocallySavedUser();
     if (user && user.expires < Date.now()) {
-      // this.logout();
       return user;
     }
-
     return null;
   }
 
   private saveUserLocally(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
-    return user;
   }
 
   private forgetUserLocally() {
     localStorage.removeItem('user');
   }
 
-  getLocallySavedUser(): User {
+  getLocallySavedUser(): User | null {
     return JSON.parse(localStorage.getItem('user'));
   }
 
