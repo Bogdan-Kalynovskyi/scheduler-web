@@ -2,10 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-<<<<<<< HEAD
-import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular4-social-login';
-=======
->>>>>>> develop
 
 import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
@@ -19,20 +15,6 @@ import { AuthComponent } from './auth/auth.component';
 import { MonthService } from './services/month.service';
 import { AuthService } from './services/auth.service';
 
-<<<<<<< HEAD
-const config = new AuthServiceConfig([
-  {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider('756043611778-04k29kslqj93sjeuplln1euccrg8ssn4.apps.googleusercontent.com')
-  }
-]);
-
-export function provideConfig() {
-  return config;
-}
-
-=======
->>>>>>> develop
 @NgModule({
     declarations: [
         AppComponent,

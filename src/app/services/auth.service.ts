@@ -14,22 +14,10 @@ export class AuthService {
   user;
 
 
-<<<<<<< HEAD
-  saveTokenToDb(socialUser: SocialUser): Promise<any> {
-    return this.http.post(environment.apiUrl + '/authenticate', socialUser)
-      .toPromise()
-      .then((user: User) => {
-        console.log(user);
-        this.saveUserLocally(user);
-        return user;
-      })
-      .catch(() => alert('Couldn\'t reach the project\'s server'));
-=======
   constructor(private http: HttpClient) {
     window['googleApiLoadedPromise']
     .then(() => this.onGapiLoaded())
     .catch(() => alert('You probably have privacy filtering enabled in AdBlock. Sign in with Google won\'t work then :('));
->>>>>>> develop
   }
 
 
