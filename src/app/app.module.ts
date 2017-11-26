@@ -1,13 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+<<<<<<< HEAD
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular4-social-login';
+=======
+>>>>>>> develop
 
 import { MaterialModule } from './material.module';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpsRequestInterceptor } from './modules/interceptor.module'
+import { HttpsRequestInterceptor } from './modules/interceptor.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -17,6 +19,7 @@ import { AuthComponent } from './auth/auth.component';
 import { MonthService } from './services/month.service';
 import { AuthService } from './services/auth.service';
 
+<<<<<<< HEAD
 const config = new AuthServiceConfig([
   {
     id: GoogleLoginProvider.PROVIDER_ID,
@@ -28,6 +31,8 @@ export function provideConfig() {
   return config;
 }
 
+=======
+>>>>>>> develop
 @NgModule({
     declarations: [
         AppComponent,
@@ -37,20 +42,14 @@ export function provideConfig() {
     ],
     imports: [
         BrowserModule,
-        FormsModule,
         HttpClientModule,
         MaterialModule,
         BrowserAnimationsModule,
         AppRoutingModule,
-        SocialLoginModule
     ],
     bootstrap: [AppComponent],
     providers: [
       {
-        provide: AuthServiceConfig,
-        useFactory: provideConfig
-      },
-      { 
         provide: HTTP_INTERCEPTORS, 
         useClass: HttpsRequestInterceptor, 
         multi: true 
