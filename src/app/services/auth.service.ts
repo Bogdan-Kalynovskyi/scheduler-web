@@ -36,20 +36,27 @@ export class AuthService {
 
 
   isAuthenticated(): User | null {
-    const user = this.getLocallySavedUser();
-    if (user && user.expires > Date.now()) {
-      return user;
+    this.user = this.getLocallySavedUser();
+    if (this.user && this.user.expires > Date.now()) {
+      this.forgetUserLocally();
     }
-    return null;
+    return this.user;
   }
 
 
-  signIn(): Promise<any> {
+  signIn(): Promise<User> {
+    let savedGoogleUser;
+
     return this.googleApiLoaded
     .then(() => this.gapi.auth2.getAuthInstance().signIn())
-    .then((googleUser) => this.authoriseOnServer(this.fetchUserInfo(googleUser)))
-    .then((user: User) => {
-      if (!user) {throw ''}
+    .then((googleUser) => {
+      savedGoogleUser = googleUser;
+      return this.authoriseOnServer(this.getUserCredentials(googleUser));
+    })
+    .then((response) => {
+      const user = this.getUserProfile(savedGoogleUser);
+      user.token = response.token;
+      user.expires = response.expires;
       this.saveUserLocally(user);
       return user;
     });
@@ -64,7 +71,7 @@ export class AuthService {
   }
 
 
-  private fetchUserInfo(googleUser) {
+  private getUserCredentials(googleUser) {
     const googleId = googleUser.getBasicProfile().getId();
     const idToken = googleUser.getAuthResponse().id_token;
     return {
@@ -73,24 +80,37 @@ export class AuthService {
     };
   }
 
+
+  private getUserProfile(googleUser): any {
+    const profile = googleUser.getBasicProfile();
+    return {
+      googleId: profile.getId(),
+      email: profile.getEmail(),
+      name: profile.getName(),
+      photoUrl: profile.getImageUrl()
+    };
+  }
+
+
   private authoriseOnServer(user): Promise<any> {
     return this.http.post(environment.apiUrl + '/authenticate', user)
-    .toPromise()
-    .catch(() => alert('Couldn\'t reach the project\'s server'));
+    .toPromise();
   }
 
   private dropServerSession(): Promise<any> {
-    return this.http.delete(environment.apiUrl + '/authenticate/' + this.user.googleId)
+    return this.http.delete(environment.apiUrl + '/authenticate')
     .toPromise();
   }
 
 
   private saveUserLocally(user: User) {
     localStorage.setItem('user', JSON.stringify(user));
+    this.user = user;
   }
 
   private forgetUserLocally() {
     localStorage.removeItem('user');
+    this.user = null;
   }
 
   private getLocallySavedUser(): User | null {
