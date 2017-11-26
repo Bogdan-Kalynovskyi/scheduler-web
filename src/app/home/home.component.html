@@ -2,12 +2,12 @@
     <mat-tab-group class="tab-group">
         <mat-tab label="Availability">
             <div class="tab-content">
-                <app-month [year]="currentYear" [month]="currentMonth"></app-month>
+                <app-month [year]="currentYear" [month]="currentMonth" [subject]="'availability'"></app-month>
             </div>
         </mat-tab>
         <mat-tab label="Schedule">
             <div class="tab-content">
-                <app-month [year]="currentYear" [month]="currentMonth"></app-month>
+                <app-month [year]="currentYear" [month]="currentMonth" [subject]="'schedule'"></app-month>
             </div>
         </mat-tab>
         <!--<mat-tab label="Days of">-->

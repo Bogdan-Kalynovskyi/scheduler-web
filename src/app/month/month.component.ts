@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 
+import { MonthService } from '../services/month.service';
+ 
 @Component({
     selector: 'app-month',
     templateUrl: './month.component.html',
@@ -11,9 +13,11 @@ export class MonthComponent implements OnInit {
     year: number;
     @Input()
     month: number;
+    @Input()
+    subject: string;
 
-    private currentMonth: number;
-    private currentYear: number;
+//    private currentMonth: number;
+//    private currentYear: number;
     private firstDayOfMonth: Date;
     private lastDayOfMonth: Date;
     public firstWeekOffset: number;
@@ -22,15 +26,17 @@ export class MonthComponent implements OnInit {
     public weekDays: number[];
     public weeks: number[];
     public monthName: string;
+    public availabilityDays: number[] = [];
+    public scheduleDays: number[] = [];
     // public weekDaysNames: string[];
 
-    constructor() {
-    }
+    constructor( private monthService: MonthService) {}
 
     ngOnInit() {
-        this.currentYear = this.year;
-        this.currentMonth = this.month;
+        // this.currentYear = this.year;
+        // this.currentMonth = this.month;
         this.redraw();
+
     }
 
     private progressiveArray(n) {
@@ -72,13 +78,36 @@ export class MonthComponent implements OnInit {
         this.redraw();
     }
 
-    private nextMonth() {
+    nextMonth() {
         this.month = this.month + 1;
         if (this.month > 11) {
             this.month = 0;
             this.year = this.year + 1;
         }
         this.redraw();
+        
+    }
+
+    updateDay(isDayAvailable, dayToUpdate) {
+        if (isDayAvailable.checked) {
+            this.availabilityDays.push(dayToUpdate);
+        } else {
+            const dayToUpdateIndex = this.availabilityDays.indexOf(dayToUpdate);
+            this.availabilityDays.splice(dayToUpdateIndex, 1);
+        }
+    }
+
+    saveMonth() {
+        this.monthService.getUserDays(this.subject, this.year, this.month)
+        .subscribe((userDays: number[]) => console.log(userDays)
+        // {
+             
+            // this.availabilityDays = userDays;
+            // this.redraw();
+    //    }
+    );
+        // this.monthService.updateUserDays('availability', this.year, this.month, this.availabilityDays)
+        // .subscribe();
     }
 
 }

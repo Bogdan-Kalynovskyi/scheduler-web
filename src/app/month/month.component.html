@@ -1,13 +1,13 @@
+<div>
+    <button mat-icon-button (click)="prevMonth()" [disabled]="isFirstMonth()">
+        <mat-icon>chevron_left</mat-icon>
+    </button>
+    {{this.monthName+ ' ' + this.year}}
+    <button mat-icon-button (click)="nextMonth()" [disabled]="isLastMonth()">
+        <mat-icon>chevron_right</mat-icon>
+    </button>
+</div>
 <table>
-    <caption>
-        <button mat-icon-button (click)="prevMonth()" [disabled]="isFirstMonth()">
-            <mat-icon>chevron_left</mat-icon>
-        </button>
-        {{this.monthName+ ' ' + this.year}}
-        <button mat-icon-button (click)="nextMonth()" [disabled]="isLastMonth()">
-            <mat-icon>chevron_right</mat-icon>
-        </button>
-    </caption>
     <colgroup>
         <col class="weekend" />
         <col class="working" />
@@ -30,8 +30,9 @@
         <td *ngFor="let j of this.weekDays; let day = index">
             <span *ngIf="(week * 7 + day - this.firstWeekOffset >= 0) && (week * 7 + day - this.firstWeekOffset < this.daysCount)">
                 {{ week * 7 + day - this.firstWeekOffset + 1 }}
-                <mat-checkbox *ngIf="day > 0 && day < 6"></mat-checkbox>
+                <mat-checkbox *ngIf="day > 0 && day < 6" (change)="updateDay($event,week * 7 + day - this.firstWeekOffset + 1)"></mat-checkbox>
             </span>
         </td>
     </tr>
 </table>
+<button mat-button (click)="saveMonth()">Save</button>

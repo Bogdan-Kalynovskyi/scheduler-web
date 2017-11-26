@@ -14,6 +14,7 @@ export class AuthService {
     return this.http.post(environment.apiUrl + '/authenticate', socialUser)
       .toPromise()
       .then((user: User) => {
+        console.log(user);
         this.saveUserLocally(user);
         return user;
       })
