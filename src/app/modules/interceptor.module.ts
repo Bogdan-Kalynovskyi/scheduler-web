@@ -9,13 +9,12 @@ import {environment} from '../../environments/environment';
 export class HttpsRequestInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.url !== (environment.apiUrl + '/authenticate')) {
-      const token = JSON.parse(localStorage.getItem('user')).token;
-
-      return next.handle(req.clone({headers: req.headers.set('x-access-token', token)}));
+    if (req.method === 'POST' && req.url === (environment.apiUrl + '/authenticate')) {
+      return next.handle(req);
     }
     else {
-      return next.handle(req);
+      const token = JSON.parse(localStorage.getItem('user')).token;
+      return next.handle(req.clone({headers: req.headers.set('csrf-token', token)}));
     }
   }
 }

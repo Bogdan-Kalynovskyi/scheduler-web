@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {environment} from '../../environments/environment';
 import User from '../models/user';
@@ -37,7 +37,8 @@ export class AuthService {
 
   isAuthenticated(): User | null {
     this.user = this.getLocallySavedUser();
-    if (this.user && this.user.expires > Date.now()) {
+    if (this.user && this.user.expires < Date.now()) {
+      this.dropServerSession();
       this.forgetUserLocally();
     }
     return this.user;
