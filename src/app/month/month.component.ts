@@ -36,12 +36,12 @@ export class MonthComponent implements OnInit {
         // this.currentYear = this.year;
         // this.currentMonth = this.month;
         this.redraw();
-        // this.monthService.getUserDays(this.subject, this.year, this.month)
-        // .subscribe((userDays: number[]) => {
-        //      console.log(userDays);
-        //     // this.availabilityDays = userDays;
-        //     // this.redraw();
-        // });
+        this.monthService.getUserDays(this.subject, this.year, this.month)
+        .subscribe((userDays: number[]) => {
+             console.log(userDays);
+            // this.availabilityDays = userDays;
+            // this.redraw();
+        });
     }
 
     private progressiveArray(n) {
