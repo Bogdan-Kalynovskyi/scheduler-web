@@ -7,10 +7,10 @@ const routes: Routes = [
         path: 'home',
         component: HomeComponent
     },
-    // {
-    //     path: 'admin',
-    //     loadChildren: './admin/admin.module#AdminModule'
-    // },
+    {
+        path: 'admin',
+        loadChildren: './admin/admin.module#AdminModule'
+    },
     {
         path: '**',
         redirectTo: '/home',
