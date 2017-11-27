@@ -11,7 +11,6 @@ const adminRoutes: Routes = [
         component: DashboardComponent,
         canActivate: [AuthGuard],
         canLoad: [AuthGuard]
-       // canActivateChild: [AuthGuard]
     }
 ];
 

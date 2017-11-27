@@ -12,11 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { MonthComponent } from './month/month.component';
 import { AuthComponent } from './auth/auth.component';
 
-import {AuthGuard} from './services/auth-guard';
-
-import { AuthenticationService} from './services/authentication.service';
-
-import { UserService } from './services/user.service';
+import { AuthGuard } from './services/auth-guard';
 import { AuthService } from './services/auth.service';
 
 @NgModule({
@@ -35,13 +31,12 @@ import { AuthService } from './services/auth.service';
     ],
     bootstrap: [AppComponent],
     providers: [
-        AuthenticationService, AuthGuard,
+      AuthGuard,
       {
         provide: HTTP_INTERCEPTORS, 
         useClass: HttpsRequestInterceptor, 
         multi: true
       },
-      UserService,
       AuthService,
     ]
 })
