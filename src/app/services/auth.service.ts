@@ -58,6 +58,11 @@ export class AuthService {
   }
 
 
+  isAdmin(): boolean {
+    return this.isAuthenticated() && this.user.isAdmin;
+  }
+
+
   signIn(): Promise<User> {
     let user;
 

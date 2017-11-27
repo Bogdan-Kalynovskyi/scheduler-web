@@ -11,10 +11,10 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-      return !!this.authService.isAuthenticated();
+      return this.authService.isAdmin();
     }
 
     canLoad(route: Route): boolean  {
-        return !!this.authService.isAuthenticated();
+        return this.authService.isAdmin();
     }
 }
