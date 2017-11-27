@@ -19,7 +19,7 @@ import { AuthService } from './services/auth.service';
         AppComponent,
         HomeComponent,
         MonthComponent,
-        AuthComponent
+        AuthComponent,
     ],
     imports: [
         BrowserModule,
@@ -33,9 +33,9 @@ import { AuthService } from './services/auth.service';
       {
         provide: HTTP_INTERCEPTORS, 
         useClass: HttpsRequestInterceptor, 
-        multi: true 
+        multi: true
       },
-      AuthService
+      AuthService,
     ]
 })
 export class AppModule { }

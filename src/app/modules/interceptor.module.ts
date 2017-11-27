@@ -1,6 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
+import 'rxjs/add/operator/do';
 
 import {environment} from '../../environments/environment';
 import {AuthService} from '../services/auth.service';
@@ -8,12 +9,13 @@ import {AuthService} from '../services/auth.service';
 
 @Injectable()
 export class HttpsRequestInterceptor implements HttpInterceptor {
+  private authService: AuthService;
 
-  constructor(private authService: AuthService) {
-  }
+  constructor(private injector: Injector) { }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    next.handle(request).subscribe(event => {
+
+  private interceptResponse(observable) {
+    return observable.do(event => {
       localStorage.setItem('apiLastAccessTime', Date.now().toString());
       this.authService.scheduleKeepAlive();
     },
@@ -40,15 +42,23 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
             break;
         }
       }
+      // return Observable.throw(error);
     });
+  }
+
+
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.authService = this.injector.get(AuthService);
 
     if (request.method === 'POST' && request.url === (environment.apiUrl + '/authenticate')) {
-      return next.handle(request);
+      return this.interceptResponse(next.handle(request));
     }
     else {
       const token = this.authService.user && this.authService.user.token;
       if (token) {
-        return next.handle(request.clone({headers: request.headers.set('csrf-token', token)}));
+        return this.interceptResponse(next.handle(request
+            .clone({headers: request.headers.set('csrf-token', token)})
+        ));
       }
       alert('Trying to access endpoint not being authorised');
       throw 401;
