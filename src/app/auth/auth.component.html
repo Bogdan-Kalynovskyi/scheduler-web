@@ -1,2 +1,6 @@
-<button mat-button *ngIf="!loggedIn" class="btn" (click)="signInWithGoogle()">Sign in with Google</button>
-<button mat-raised-button *ngIf="loggedIn" class="btn btn-primary" (click)="signOut()">Sign Out</button>
+<button mat-raised-button *ngIf="!user" class="btn btn-primary" (click)="signIn()">
+    Sign in with Google
+</button>
+<button mat-raised-button *ngIf="user" class="btn" (click)="signOut()">
+    Sign Out {{user.name}} <b>{{user.email}}</b> <img width="42" [src]="user.photoUrl" alt="">
+</button>
