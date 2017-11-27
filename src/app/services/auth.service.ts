@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 
 import {environment} from '../../environments/environment';
 import User from '../models/user';
+import {setTimeout} from "timers";
 
 @Injectable()
 export class AuthService {
@@ -11,13 +12,30 @@ export class AuthService {
   googleApiLoaded = new Promise((resolve) => {
     this.resolveApiLoaded = resolve;
   });
+  expiryTime = 3600 * 1000;
+  private keepAliveHandler;
   user;
 
 
   constructor(private http: HttpClient) {
-    window['googleApiLoadedPromise']
-    .then(() => this.onGapiLoaded())
-    .catch(() => alert('You probably have privacy filtering enabled in AdBlock. Sign in with Google won\'t work then :('));
+    this.loadGapi();
+    const apiLastAccess = +localStorage.getItem('apiLastAccessTime');
+    if (apiLastAccess && Date.now() > apiLastAccess + this.expiryTime) {
+      this.forgetUserLocally();
+    }
+    if (this.isAuthenticated()) {
+      this.scheduleKeepAlive();
+    }
+  }
+
+
+  private loadGapi() {
+    const scriptEl = <HTMLScriptElement>document.createElement('SCRIPT');
+    scriptEl.onload = () => this.onGapiLoaded();
+    scriptEl.onerror = () => alert('You probably have privacy filtering enabled in AdBlock. Sign in with Google won\'t work then :(');
+    scriptEl.async = true;  scriptEl.defer = true;
+    scriptEl.src = 'https://apis.google.com/js/platform.js';
+    document.body.appendChild(scriptEl);
   }
 
 
@@ -72,6 +90,14 @@ export class AuthService {
       googleId: googleId,
       idToken: idToken
     };
+  }
+
+
+  scheduleKeepAlive() {
+    clearTimeout(this.keepAliveHandler);
+    this.keepAliveHandler = setTimeout(() => {
+      this.http.get(environment.apiUrl + '/authenticate');
+    }, this.expiryTime);
   }
 
 
