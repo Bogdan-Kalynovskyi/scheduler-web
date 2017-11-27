@@ -36,28 +36,21 @@ export class AuthService {
 
 
   isAuthenticated(): User | null {
-    this.user = this.getLocallySavedUser();
-    if (this.user && this.user.expires < Date.now()) {
-      this.dropServerSession();
-      this.forgetUserLocally();
-    }
-    return this.user;
+    return this.getLocallySavedUser();
   }
 
 
   signIn(): Promise<User> {
-    let savedGoogleUser;
+    let user;
 
     return this.googleApiLoaded
     .then(() => this.gapi.auth2.getAuthInstance().signIn())
     .then((googleUser) => {
-      savedGoogleUser = googleUser;
+      user = this.getUserProfile(googleUser);
       return this.authoriseOnServer(this.getUserCredentials(googleUser));
     })
-    .then((response) => {
-      const user = this.getUserProfile(savedGoogleUser);
-      user.token = response.token;
-      user.expires = response.expires;
+    .then(({token}) => {
+      user.token = token;
       this.saveUserLocally(user);
       return user;
     });
@@ -115,6 +108,6 @@ export class AuthService {
   }
 
   private getLocallySavedUser(): User | null {
-    return JSON.parse(localStorage.getItem('user'));
+    return this.user = JSON.parse(localStorage.getItem('user'));
   }
 }
