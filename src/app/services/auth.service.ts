@@ -37,7 +37,7 @@ export class AuthService {
 
   isAuthenticated(): User | null {
     this.user = this.getLocallySavedUser();
-    if (this.user && this.user.expires > Date.now()) {
+    if (this.user && this.user.expires < Date.now()) {
       this.forgetUserLocally();
     }
     return this.user;
