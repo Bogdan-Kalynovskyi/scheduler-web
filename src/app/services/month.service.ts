@@ -10,11 +10,13 @@ import 'rxjs/add/operator/map';
 
 export class MonthService {
 
-    constructor (private http: HttpClient) {}
+    constructor (private http: HttpClient) {
+    }
 
     updateUserDays(subject, year, month, days ): Observable<any> {
         return this.http.post(`${environment.apiUrl}/${subject}/${year}/${month}`, days);
     }
+
     getUserDays(subject, year, month ): Observable<number[]> {
         return this.http.get(`${environment.apiUrl}/${subject}/${year}/${month}`)
             .map((res: number[]) => res);

@@ -6,6 +6,7 @@ import User from '../models/user';
 
 
 @Injectable()
+
 export class AuthService {
   gapi;
   private resolveApiLoaded: Function;
