@@ -29,10 +29,11 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
             break;
           case 401:
             alert('Your session has been expired. You\'ll now be logged out.');
-            location.reload();
+            this.authService.signOut();
             break;
           case 403:
             alert('You are not allowed here');
+            this.authService.signOut();
             break;
           case 400:
             alert('Bug in the app');

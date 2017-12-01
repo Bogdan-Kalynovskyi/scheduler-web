@@ -25,7 +25,6 @@ export class AuthComponent implements OnInit {
   }
 
   signOut() {
-    this.authService.signOut()
-    .then(() => location.reload());
+    this.authService.signOut();
   }
 }

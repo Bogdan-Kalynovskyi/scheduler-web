@@ -70,8 +70,8 @@ export class AuthService {
     return this.googleApiLoaded
     .then(() => this.gapi.auth2.getAuthInstance().signIn())
     .then((googleUser) => {
-      user = this.getUserProfile(googleUser);
-      return this.authoriseOnServer(this.getUserCredentials(googleUser));
+      user = this.getGoogleProfile(googleUser);
+      return this.authoriseOnServer(this.getGoogleCredentials(googleUser));
     })
     .then(({token}) => {
       user.token = token;
@@ -83,13 +83,22 @@ export class AuthService {
 
   signOut(): Promise<any> {
     return this.googleApiLoaded
-    .then(() => this.gapi.auth2.getAuthInstance().signOut())
-    .then(() => this.dropServerSession())
-    .then(() => this.forgetUserLocally());
+    .then(() => {
+      const signOutWhatever = () => {
+        this.dropServerSession()
+        .then(() => this.forgetUserLocally())
+        .then(() => location.reload());
+      };
+
+      // google signout usually fails as of late 2017
+      this.gapi.auth2.getAuthInstance().signOut()
+      .then(() => signOutWhatever())
+      .catch(() => signOutWhatever());
+    });
   }
 
 
-  private getUserCredentials(googleUser) {
+  private getGoogleCredentials(googleUser) {
     const googleId = googleUser.getBasicProfile().getId();
     const idToken = googleUser.getAuthResponse().id_token;
     return {
@@ -107,7 +116,7 @@ export class AuthService {
   }
 
 
-  private getUserProfile(googleUser): any {
+  private getGoogleProfile(googleUser): any {
     const profile = googleUser.getBasicProfile();
     return {
       googleId: profile.getId(),
