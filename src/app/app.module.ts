@@ -14,6 +14,7 @@ import { AuthComponent } from './auth/auth.component';
 
 import { AuthGuard } from './services/auth-guard';
 import { AuthService } from './services/auth.service';
+import { MonthService } from './services/month.service';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { AuthService } from './services/auth.service';
         multi: true
       },
       AuthService,
+      MonthService
     ]
 })
 export class AppModule { }
