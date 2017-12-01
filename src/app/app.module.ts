@@ -12,7 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { MonthComponent } from './month/month.component';
 import { AuthComponent } from './auth/auth.component';
 
-import { MonthService } from './services/month.service';
+import { AuthGuard } from './services/auth-guard';
 import { AuthService } from './services/auth.service';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { AuthService } from './services/auth.service';
         AppComponent,
         HomeComponent,
         MonthComponent,
-        AuthComponent
+        AuthComponent,
     ],
     imports: [
         BrowserModule,
@@ -31,13 +31,13 @@ import { AuthService } from './services/auth.service';
     ],
     bootstrap: [AppComponent],
     providers: [
+      AuthGuard,
       {
         provide: HTTP_INTERCEPTORS, 
         useClass: HttpsRequestInterceptor, 
-        multi: true 
+        multi: true
       },
       AuthService,
-      MonthService
     ]
 })
 export class AppModule { }

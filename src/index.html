@@ -11,14 +11,5 @@
 
 <body>
   <app-root></app-root>
-
-  <script>
-    var googleApiLoadedPromise = new Promise(function(resolve, reject) {
-        window.onGoogleAuthLoaded = resolve;
-        window.onGoogleAuthFailed = reject;
-    });
-  </script>
-  <script src="https://apis.google.com/js/platform.js?onload=onGoogleAuthLoaded" async defer
-  onerror="onGoogleAuthFailed()"></script>
 </body>
 </html>

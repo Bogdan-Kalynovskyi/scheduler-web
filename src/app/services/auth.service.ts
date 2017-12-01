@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 import {environment} from '../../environments/environment';
 import User from '../models/user';
+
 
 @Injectable()
 export class AuthService {
@@ -11,13 +12,30 @@ export class AuthService {
   googleApiLoaded = new Promise((resolve) => {
     this.resolveApiLoaded = resolve;
   });
+  expiryTime = 3600 * 1000;
+  private keepAliveHandler;
   user;
 
 
   constructor(private http: HttpClient) {
-    window['googleApiLoadedPromise']
-    .then(() => this.onGapiLoaded())
-    .catch(() => alert('You probably have privacy filtering enabled in AdBlock. Sign in with Google won\'t work then :('));
+    this.loadGapi();
+    const apiLastAccess = +localStorage.getItem('apiLastAccessTime');
+    if (apiLastAccess && Date.now() > apiLastAccess + this.expiryTime) {
+      this.forgetUserLocally();
+    }
+    if (this.isAuthenticated()) {
+      this.scheduleKeepAlive();
+    }
+  }
+
+
+  private loadGapi() {
+    const scriptEl = <HTMLScriptElement>document.createElement('SCRIPT');
+    scriptEl.onload = () => this.onGapiLoaded();
+    scriptEl.onerror = () => alert('You probably have privacy filtering enabled in AdBlock. Sign in with Google won\'t work then :(');
+    scriptEl.async = true;  scriptEl.defer = true;
+    scriptEl.src = 'https://apis.google.com/js/platform.js';
+    document.body.appendChild(scriptEl);
   }
 
 
@@ -36,27 +54,26 @@ export class AuthService {
 
 
   isAuthenticated(): User | null {
-    this.user = this.getLocallySavedUser();
-    if (this.user && this.user.expires < Date.now()) {
-      this.forgetUserLocally();
-    }
-    return this.user;
+    return this.getLocallySavedUser();
+  }
+
+
+  isAdmin(): boolean {
+    return this.isAuthenticated() && this.user.isAdmin;
   }
 
 
   signIn(): Promise<User> {
-    let savedGoogleUser;
+    let user;
 
     return this.googleApiLoaded
     .then(() => this.gapi.auth2.getAuthInstance().signIn())
     .then((googleUser) => {
-      savedGoogleUser = googleUser;
+      user = this.getUserProfile(googleUser);
       return this.authoriseOnServer(this.getUserCredentials(googleUser));
     })
-    .then((response) => {
-      const user = this.getUserProfile(savedGoogleUser);
-      user.token = response.token;
-      user.expires = response.expires;
+    .then(({token}) => {
+      user.token = token;
       this.saveUserLocally(user);
       return user;
     });
@@ -78,6 +95,14 @@ export class AuthService {
       googleId: googleId,
       idToken: idToken
     };
+  }
+
+
+  scheduleKeepAlive() {
+    clearTimeout(this.keepAliveHandler);
+    this.keepAliveHandler = setTimeout(() => {
+      this.http.get(environment.apiUrl + '/authenticate');
+    }, this.expiryTime);
   }
 
 
@@ -114,6 +139,6 @@ export class AuthService {
   }
 
   private getLocallySavedUser(): User | null {
-    return JSON.parse(localStorage.getItem('user'));
+    return this.user = JSON.parse(localStorage.getItem('user'));
   }
 }
