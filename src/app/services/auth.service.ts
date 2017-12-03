@@ -87,7 +87,7 @@ export class AuthService {
       const signOutWhatever = () => {
         this.dropServerSession()
         .then(() => this.forgetUserLocally())
-        .then(() => location.reload());
+        .then(() => setTimeout(() => location.reload(), 400));
       };
 
       // google signout usually fails as of late 2017

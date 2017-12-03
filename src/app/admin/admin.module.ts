@@ -3,7 +3,7 @@ import {HttpModule} from '@angular/http';
 
 import { NgModule } from '@angular/core';
 
-import { DashboardComponent } from './dashboard.component';
+import { DashboardComponent } from './admin.component';
 import { routing } from './admin-routing.module';
 
 @NgModule({
