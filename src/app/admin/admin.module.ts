@@ -1,6 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {HttpModule} from '@angular/http';
-
+import {HttpClient} from '@angular/common/http';
 import { NgModule } from '@angular/core';
 
 import { DashboardComponent } from './admin.component';
@@ -9,7 +8,7 @@ import { routing } from './admin-routing.module';
 @NgModule({
     imports: [
         CommonModule,
-        HttpModule,
+        HttpClient,
         routing
     ],
     declarations: [DashboardComponent]

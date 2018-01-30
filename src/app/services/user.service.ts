@@ -13,15 +13,13 @@ export class UserService {
   }
 
   getAllUsers(): Promise<User[]> {
-    return this.http.get(`${environment.apiUrl}/admin/users`)
-    .toPromise()
-    .then(response => response as User[]);
+    return this.http.get<User[]>(`${environment.apiUrl}/admin/users`)
+    .toPromise();
   }
 
   saveUser(user: User): Promise<User> {
-    return this.http.post(`${environment.apiUrl}/admin/users`, user)
-    .toPromise()
-    .then(response => response as User);
+    return this.http.post<User>(`${environment.apiUrl}/admin/users`, user)
+    .toPromise();
   }
 
   deleteUser(user: User): Promise<any> {
