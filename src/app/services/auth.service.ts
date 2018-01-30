@@ -4,9 +4,9 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import User from '../models/user';
 
+//todo 3d party cookie
 
 @Injectable()
-
 export class AuthService {
   gapi;
   private resolveApiLoaded: Function;
@@ -71,12 +71,16 @@ export class AuthService {
     .then(() => this.gapi.auth2.getAuthInstance().signIn())
     .then((googleUser) => {
       user = this.getGoogleProfile(googleUser);
-      return this.authoriseOnServer(this.getGoogleCredentials(googleUser));
+      return this.authoriseAndCreateSession(this.getGoogleCredentials(googleUser));
     })
-    .then(({token}) => {
+    .then(({token, isAdmin}) => {
       user.token = token;
+      user.isAdmin = isAdmin;
       this.saveUserLocally(user);
       return user;
+    })
+    .catch(() => {
+      debugger;
     });
   }
 
@@ -84,16 +88,21 @@ export class AuthService {
   signOut(): Promise<any> {
     return this.googleApiLoaded
     .then(() => {
-      const signOutWhatever = () => {
-        this.dropServerSession()
-        .then(() => this.forgetUserLocally())
-        .then(() => setTimeout(() => location.reload(), 400));
+      const dropSessionWhatever = () => {
+        this.dropSession()
+        .then(() => forgetWhatever())
+        .catch(() => forgetWhatever());
+      };
+
+      const forgetWhatever = () => {
+        this.forgetUserLocally();
+        location.reload();
       };
 
       // google signout usually fails as of late 2017
       this.gapi.auth2.getAuthInstance().signOut()
-      .then(() => signOutWhatever())
-      .catch(() => signOutWhatever());
+      .then(() => dropSessionWhatever())
+      .catch(() => dropSessionWhatever());
     });
   }
 
@@ -127,12 +136,13 @@ export class AuthService {
   }
 
 
-  private authoriseOnServer(user): Promise<any> {
+  private authoriseAndCreateSession(user): Promise<any> {  // returns token
     return this.http.post(environment.apiUrl + '/authenticate', user)
     .toPromise();
   }
 
-  private dropServerSession(): Promise<any> {
+
+  private dropSession(): Promise<any> {
     return this.http.delete(environment.apiUrl + '/authenticate')
     .toPromise();
   }

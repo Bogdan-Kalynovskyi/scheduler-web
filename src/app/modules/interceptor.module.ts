@@ -15,17 +15,16 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
 
 
   private interceptResponse(observable) {
-    return observable.do(event => {
+    return observable.do(() => {
       localStorage.setItem('apiLastAccessTime', Date.now().toString());
       this.authService.scheduleKeepAlive();
     },
     error => {
       if (error instanceof HttpErrorResponse) {
+        debugger
         switch (error.status) {
           case 0:
             alert('You\'ve lost internet connection, please retry');
-            // todo: go fuck retry yourself!
-            // todo: don't notify me on every request dude, just on the first one
             break;
           case 401:
             alert('Your session has been expired. You\'ll now be logged out.');
@@ -43,7 +42,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
             break;
         }
       }
-      // return Observable.throw(error);
+      return Observable.throw(error);
     });
   }
 
